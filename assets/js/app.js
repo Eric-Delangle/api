@@ -5,6 +5,8 @@ import HomePage from "./pages/HomePage";
 import { HashRouter, Switch, Route } from "react-router-dom"
 import CustomersPage from "./pages/CustomersPage";
 import InvoicesPage from "./pages/InvoicesPage";
+import LoginPage from "./pages/LoginPage";
+import AuthApi from "./services/authApi";
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -15,6 +17,7 @@ import InvoicesPage from "./pages/InvoicesPage";
 // any CSS you import will output into a single css file (app.css in this case)
 require ("../css/app.css");
 
+AuthApi.setup();
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 // import $ from 'jquery';
 
@@ -28,6 +31,7 @@ const App = () => {
             <Navbar />
             <main className="container pt-5">
                 <Switch>
+                    <Route path="/login" component = { LoginPage }/>
                     <Route path="/customers" component = { CustomersPage }/>
                     <Route path="/invoices" component = { InvoicesPage }/>
                     <Route path="/" component= { HomePage }/>
