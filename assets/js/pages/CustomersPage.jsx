@@ -1,48 +1,87 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
 import Pagination from '../components/Pagination';
+import CustomersApi from "../services/CustomersApi";
 
 const CustomersPage = (props) => {
 
     const [customers, setCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [ search, setSearch] = useState("");
 
-    useEffect( ()=>{
-        axios.get("http://localhost:8000/api/customers")
-        .then(response => response.data["hydra:member"])
-        .then(data => setCustomers(data))
-        .catch(error => console.log(error.response));
-    }, [])
+    // Permet d'aller récuperer les customers
+    const fetchCustomers = async () => {
+        try
+        {
+           const data = await  CustomersApi.findAll()
+           setCustomers(data);
+        } 
+        catch (error) 
+        {
+            console.log(error.response);
+        }
+    }
 
-    const handleDelete = (id) => {
+    // Au chargement du composant on va chercher les customers
+        useEffect( ()=> {
+            fetchCustomers();
+        }, []);
+
+    //Gestion de la suppression d'un customer 
+        const handleDelete = async  (id) => {
         const originalCustomers = [...customers];
 
-        // 1. approche optimiste 
+    // 1. approche optimiste 
         setCustomers(customers.filter(customer => customer.id !== id));
 
-        //2. approche pessimiste
-        axios
-        .delete("http://localhost:8000/api/customers/" + id )
-        .then(response => console.log("ok"))
-        .catch(error => {
+    //2. approche pessimiste
+
+        try
+        {
+             await CustomersApi.delete(id)
+        } 
+        catch (error)
+        {
             setCustomers(originalCustomers);
-            console.log(error.response);
-        });
+        }
     };
 
-  const  handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+    //Gestion du changement de page
+    const  handlePageChange = page => setCurrentPage(page);
+
+    // Creation de la methode permettant de rechercher un customer en particulier
+    const handleSearch = ({ currentTarget }) => {
+        setSearch(currentTarget.value);
+        setCurrentPage(1);
+    }
+
     const itemsPerPage = 10;
-    const paginatedCustomers = Pagination.getData( 
-        customers, 
+
+    // cette variable va filtrer ma recherche sur un customer selon son prénom, son nom ,son email ou sa company en minuscule.
+    const filteredCustomers = customers.filter(
+        c =>
+        c.firstName.toLowerCase().includes( search.toLowerCase())
+        ||
+        c.lastName.toLowerCase().includes( search.toLowerCase())
+        ||
+        c.email.toLowerCase().includes( search.toLowerCase())
+        ||
+       (c.company && c.company.toLowerCase().includes( search.toLowerCase()))
+    );
+
+    // Pagination des données.
+    const paginatedCustomers =  filteredCustomers.length > itemsPerPage ? Pagination.getData( 
+        filteredCustomers, 
         currentPage, 
         itemsPerPage
-        );
+        ) : filteredCustomers;
 
     return ( 
         <>
                 <h1>Liste des clients</h1>
+
+                <div className="form-group">
+                    <input type="text" className="form-control" onChange= { handleSearch } value = { search} placeholder = "Recherchez ..."  />
+                </div>
                 <table className="table table-hover">
                     <thead>
                         <tr>
@@ -82,8 +121,9 @@ const CustomersPage = (props) => {
             
                </tbody>
                 </table>
-                <Pagination currentPage = {currentPage} itemsPerPage = {itemsPerPage} length = { customers.length} onPageChanged = { handlePageChange}/>
-               
+               { itemsPerPage < filteredCustomers.length &&  (
+               <Pagination currentPage = {currentPage} itemsPerPage = {itemsPerPage} length = { filteredCustomers.length} onPageChanged = { handlePageChange}/>
+                ) }
                         </>
     );
 }

@@ -1,88 +1,133 @@
+import moment from "moment";
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
 import Pagination from '../components/Pagination';
+import InvoicesApi from "../services/invoicesApi";
+
+const STATUS_CLASSES = {
+    PAID: "success",
+    SENT: "primary",
+    CANCELLED: "danger"
+}
+
+const STATUS_LABELS = {
+    PAID: "Payée",
+    SENT: "Envoyée",
+    CANCELLED: "Annulée"
+}
 
 const InvoicesPage = (props) => {
 
     const [invoices, setInvoices] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [ search, setSearch] = useState("");
+    const itemsPerPage = 10;
 
-    useEffect( ()=>{
-        axios.get("http://localhost:8000/api/invoices")
-        .then(response => response.data["hydra:member"])
-        .then(data => setInvoices(data))
-        .catch(error => console.log(error.response));
-    }, [])
-
-    const handleDelete = (id) => {
-        const originalInvoices = [...invoices];
-
-        // 1. approche optimiste 
-        setInvoices(invoices.filter(invoice => invoice.id !== id));
-
-        //2. approche pessimiste
-        axios
-        .delete("http://localhost:8000/api/invoices/" + id )
-        .then(response => console.log("ok"))
-        .catch(error => {
-            setCustomers(originalInvoices);
+    // Récuperation des factures auprès de l'api.
+    const fetchInvoices = async () => {
+        try {
+            const data =  await InvoicesApi.findAll();
+            setInvoices(data);
+        }
+        catch (error)
+        {
             console.log(error.response);
-        });
+        } 
     };
 
-  const  handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-    const itemsPerPage = 30;
-    const paginatedInvoices = Pagination.getData( 
-        invoices, 
+    // Charger les invoices au chargement du composant.
+        useEffect(() => {
+            fetchInvoices();
+        }, []);
+
+     //Gestion du changement de page
+     const  handlePageChange = page => setCurrentPage(page);
+
+     // Creation de la methode permettant de rechercher un customer en particulier
+     const handleSearch = ({ currentTarget }) => {
+         setSearch(currentTarget.value);
+         setCurrentPage(1);
+     }
+
+    // Gestion de la date grâce à la librairie moment.js (on peut la transformer en service).
+    const formatDate = (str) => moment(str).format("DD/MM/YYYY");
+
+    //Gestion de la recherche
+     const filteredInvoices = invoices.filter( 
+         i => 
+         i.customer.firstName.toLowerCase().includes( search.toLowerCase())||
+        i.customer.lastName.toLowerCase().includes(search.toLowerCase())||
+        i.amount.toString().startsWith(search.toLowerCase())||
+        STATUS_LABELS[i.status].toLowerCase().includes(search.toLowerCase())
+     );
+
+     // Gestion de la suppression d'une facture.
+        const handleDelete = async id => {
+            const originalInvoices = [...invoices];
+            setInvoices(invoices.filter(invoice => invoice.id !== id));
+            try {
+                await InvoicesApi.delete(id);
+            } catch (error) {
+                console.log(error.response);
+                setInvoices(originalInvoices);
+            }
+        }
+
+    // Pagination des données.
+    const paginatedInvoices =  invoices.length > itemsPerPage ? Pagination.getData( 
+        filteredInvoices, 
         currentPage, 
         itemsPerPage
-        );
+        ) : invoices;
 
-    return ( 
+    return (
         <>
-                <h1>Liste des factures</h1>
-                <table className="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Chrono</th>
-                            <th>Montant</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-               <tbody>
-                 
-                   { paginatedInvoices.map( invoice=>  ( 
-                        <tr key ={invoice.id}>
-                       <td>{invoice.id}</td>
-                       <td>
-                           {invoice.chrono}
-                       </td>
-                       <td>{invoice.amount}</td>
-                       <td>{invoice.status}</td>
-                       < td className="text-center">
-                           <span className="badge badge-primary">{invoices.length}</span>
+            <h1>Liste des factures</h1>
+            <div className="form-group">
+                    <input type="text" className="form-control" onChange= { handleSearch } value = { search} placeholder = "Recherchez ..."  />
+            </div>
+
+            <table className="table table-hover">
+                <thead>
+                    <tr>
+                        <th className="text-center">Numéro</th>
+                        <th>Client</th>
+                        <th className="text-center">Date d'envoi</th>
+                        <th className="text-center">Statut</th>
+                        <th className="text-center">Montant</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    { paginatedInvoices.map(invoice => 
+                        <tr key= {invoice.id}>
+                            <td className="text-center">{ invoice.chrono }</td>
+                        <td>
+                            <a href="#">{ invoice.customer.firstName } { invoice.customer.lastName }</a>
                         </td>
-                        < td className="text-center">
-                            
-                        </ td >
-                       <td>
-                           <button 
-                           onClick = { () => handleDelete(invoice.id)}
-                           disabled = {invoices.length > 0}
-                           className="btn btn-sm btn-danger">Supprimer</button>
-                       </td>
-                   </tr>
-                    ) ) }
-            
-               </tbody>
-                </table>
-                <Pagination currentPage = {currentPage} itemsPerPage = {itemsPerPage} length = { invoices.length} onPageChanged = { handlePageChange}/>
-               
-                        </>
-    );
-}
- 
+                        <td className="text-center">{ formatDate(invoice.sentAt) }</td>
+                        <td className="text-center">
+                            <span className={"badge badge-" + STATUS_CLASSES [invoice.status]}>
+                                { STATUS_LABELS [invoice.status]}
+                            </span>
+                        </td>
+                        <td className="text-center">{ invoice.amount.toLocaleString() } €</td>
+                        <td>
+                            <button className="btn btn-sm btn-primary mr-1">Editer</button>
+                            <button 
+                                    className="btn btn-sm btn-danger"
+                                    onClick={ () => handleDelete(invoice.id)}>
+                                        Supprimer
+                            </button>
+                        </td>
+                    </tr>)}
+                   
+                </tbody>
+            </table>
+
+            <Pagination currentPage = {currentPage} itemsPerPage = {itemsPerPage} length = { filteredInvoices.length} onPageChanged = { handlePageChange}/>
+        </>
+    )
+   
+    }
+
 export default InvoicesPage;
