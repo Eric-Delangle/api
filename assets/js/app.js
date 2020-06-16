@@ -1,13 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import ReactDom from "react-dom";
+import { HashRouter, Route, Switch, withRouter } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import HomePage from "./pages/HomePage";
-import { HashRouter, Switch, Route, withRouter, Redirect } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
+import AuthContext from "./contexts/AuthContext";
 import CustomersPage from "./pages/CustomersPage";
+import HomePage from "./pages/HomePage";
 import InvoicesPage from "./pages/InvoicesPage";
 import LoginPage from "./pages/LoginPage";
 import AuthApi from "./services/authApi";
-import AuthContext from "./contexts/AuthContext";
+import CustomerPage from "./pages/CustomerPage";
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -20,14 +22,7 @@ require ("../css/app.css");
 
 AuthApi.setup();
 
-const PrivateRoute = ( {path, component} ) => { 
-    const { isAuthenticated } = useContext (AuthContext);
-      return  isAuthenticated ? (
-        <Route path= { path } component= { component } />
-        ) : (
-        <Redirect to="/login" />
-        );
-     }
+
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 // import $ from 'jquery';
 
@@ -42,21 +37,20 @@ const App = () => {
 
   const NavbarWithRouter =  withRouter(Navbar);
 
-  // Je crée un contexte qui match avec la forme.
-  const contextValue =  {
-      isAuthenticated,
-      setIsAuthenticated
-  };
- 
+
     return ( 
           /* Le HashRouter me permet de dire qu'on reste sur la meme page mais avec un element different  #/customers ou #/invoices ,etc...*/
         /*  C'est le switch qui joue le rôle du router */
-        <AuthContext.Provider value= { contextValue }>
+        <AuthContext.Provider value= { {
+            isAuthenticated,
+            setIsAuthenticated
+        } }>
             <HashRouter>
                 <NavbarWithRouter />
                 <main className="container pt-5">
                     <Switch>
                         <Route path="/login"  component= { LoginPage }/>
+                        <PrivateRoute path="/customers/:id"  component={ CustomerPage } />
                         <PrivateRoute path="/customers"  component={ CustomersPage } />
                         <PrivateRoute path="/invoices" component = { InvoicesPage }/>
                         <Route path="/" component= { HomePage }/>

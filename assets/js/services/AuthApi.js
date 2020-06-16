@@ -9,6 +9,10 @@ function logout() {
   delete axios.defaults.headers["Authorization"];
 }
 
+/**
+ * Requète HTTP d'authentification et stockage du token dans le localStorage et axios.
+ * @param {object} credentials 
+ */
 function authenticate (credentials) {
     return  axios.post("http://localhost:8000/api/login_check", credentials)
      .then(response => response.data.token)
