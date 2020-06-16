@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import AuthApi from '../services/authApi';
+import AuthContext from "../contexts/AuthContext";
 
-const LoginPage = (props) => {
-
+const LoginPage = ({ history }) => {
+    const { setIsAuthenticated } = useContext(AuthContext);
     const [credentials, setCredentials] = useState( {
         username: "",
         password: ""
     })
-
+  
     const[error, setError] = useState("");
 
     // Gestion des champs
@@ -22,6 +23,8 @@ const LoginPage = (props) => {
        try {
            await AuthApi.authenticate(credentials);
            setError("");
+           setIsAuthenticated(true);
+           history.replace("/customers");
            } catch(error) {
            setError("Aucun compte ne possède cette adresse ou alors les informations ne correspondent pas.");
        }
