@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import Field from '../components/forms/Field';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from "axios";
+import Field from '../components/forms/Field';
+import { default as CustomerApi, default as CustomersApi } from "../services/customersApi";
 
-const CustomerPage = (props) => {
+const CustomerPage = ( { match, history }) => {
+
+   const {id ="new"} = match.params;
+
     const [ customer, setCustomer ]= useState({
         lastName: "",
         firstName: "",
@@ -17,29 +20,63 @@ const CustomerPage = (props) => {
         email: "",
         company: ""
     })
+
+    const [ editing, setEditing] =useState(false);
+
+    // Récuperation d'un customer en fonction de l'identifiant.
+    const fetchCustomer = async id => { 
+        try { 
+            const { firstName, lastName, email, company }  = await CustomersApi.find(id);
+            setCustomer({ firstName, lastName, email, company });
+        } catch (error) {
+    // notification flash d'une erreur
+            history.replace("/customers");
+        }
+    }
+
+    // Chargement du customer si besoin au chargement du composant ou au changement de l'identifiant.
+    useEffect( () => {
+        if (id !== "new") { 
+        setEditing(true);
+        fetchCustomer(id)
+        }
+    }, [id]);
+   
+    // Gestion des changements des i nputs dans le formulaire.
     const handleChange = ({ currentTarget }) => {
         const { name, value }= currentTarget;
         setCustomer({ ...customer, [name] : value });
     }
 
+    // Gestion de la soumission du formulaire
     const handleSubmit =  async event => {
         event.preventDefault();
       try {
-          const response =   await axios.post("http://localhost:8000/api/customers" ,  customer )
+          if (editing) {
+             await CustomersApi.update(id, customer);
+    // faire une flash notification de succès
+          } else {
+            await CustomerApi.create(customer);
+    // faire une flash notification de succès
+            props.history.replace("/customers");
+          }
           setErrors({});
-      } catch (error) {
-       if (error.response.data.violations) {
-           const apiErrors = {};
-           error.response.data.violations.forEach( violation => {
-                apiErrors [violation.propertyPath] = violation.message;
-           });
+      } catch ({ response }) {
+        const { violations } = response.data;
+  
+        if (violations) {
+          const apiErrors = {};
+          violations.forEach(({ propertyPath, message }) => {
+            apiErrors[propertyPath] = message;
+          });
            setErrors(apiErrors);
+    // flash notification d'erreur
        }
       }
     }
     return ( 
         <>
-            <h1>Création d'un client.</h1>
+            {( !editing && <h1>Création d'un client.</h1>) ||( <h1>Modification du client.</h1>)}
             <form onSubmit= { handleSubmit }>
                 <Field 
                     name = "lastName" 

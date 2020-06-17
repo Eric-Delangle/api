@@ -6,7 +6,7 @@ import jwtDecode from "jwt-decode";
  */
 function logout() {
   window.localStorage.removeItem("authToken");
-  delete axios.defaults.headers["Authorization"];
+  delete axios.defaults.headers["Authorization"] ;
 }
 
 /**
@@ -21,7 +21,6 @@ function authenticate (credentials) {
       window.localStorage.setItem("authToken", token);
       // On previent axios qu'on a maintenant un header par defaut sur toutes nos futures requetes HTTP.
       setAxiosToken(token);
-      return true;
      })
   }
 

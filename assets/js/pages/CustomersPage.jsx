@@ -3,7 +3,7 @@ import Pagination from '../components/Pagination';
 import CustomersApi from "../services/CustomersApi";
 import { Link } from  "react-router-dom";
 
-const CustomersPage = (props) => {
+const CustomersPage = props => {
 
     const [customers, setCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);

@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Je précise tous les paramètres dont mon champ aura besoin .
 const Field = ({ name, label, value, onChange, placeholder= "", type ="text ", error ="" }) => ( 
     <div className="form-group">
     <label htmlFor={ name }>{ label }</label>
