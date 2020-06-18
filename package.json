@@ -26,6 +26,6 @@
         "react-toastify": "^6.0.5"
     },
     "engines": {
-        "node": "12x"
+        "node": "12.16.3"
       }
 }
