@@ -1,5 +1,5 @@
 import axios from "axios";
-import Cache from "./cache";
+import Cache from "./Cache";
 import { CUSTOMERS_API } from "../config";
 
 async function findAll () {
