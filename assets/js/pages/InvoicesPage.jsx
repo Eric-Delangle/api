@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
-import InvoicesAPI from "../servants/invoicesAPI";
+import InvoicesApi from "../servants/invoicesApi";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import TableLoader from "../components/loaders/TableLoader";

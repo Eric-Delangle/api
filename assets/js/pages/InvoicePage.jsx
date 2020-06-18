@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Field from "../components/forms/Field";
 import Select from "../components/forms/Select";
 import { Link } from "react-router-dom";
-import CustomersAPI from "../servants/customersAPI";
-import InvoicesAPI from "../servants/invoicesAPI";
+import CustomersApi from "../servants/customersApi";
+import InvoicesApi from "../servants/invoicesApi";
 import { toast } from "react-toastify";
 import FormContentLoader from "../components/loaders/FormContentLoader";
 
