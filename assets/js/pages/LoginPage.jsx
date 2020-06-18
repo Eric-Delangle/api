@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import AuthApi from "../servants/authApi";
+import AuthApi from "../servants/AuthApi";
 import AuthContext from "../contexts/AuthContext";
 import Field from "../components/forms/Field";
 import { toast } from "react-toastify";
