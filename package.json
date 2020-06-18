@@ -23,6 +23,7 @@
         "react-content-loader": "^5.0.4",
         "react-dom": "^16.13.1",
         "react-router-dom": "^5.2.0",
-        "react-toastify": "^6.0.5"
+        "react-toastify": "^6.0.5",
+        "node": "^12.16.3"
     }
 }
