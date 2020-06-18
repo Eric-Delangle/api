@@ -24,13 +24,13 @@ import 'react-toastify/dist/ReactToastify.css';
 // any CSS you import will output into a single css file (app.css in this case)
 require ("../css/app.css");
 
+//Permet de savoir si on est authentifié au démarrage de l'appli.
 AuthApi.setup();
 
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 // import $ from 'jquery';
 
-console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
 
 const App = () => {
 
