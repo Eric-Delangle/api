@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Field from '../components/forms/Field';
-import { default as CustomerApi, default as CustomersApi } from "/customersApi";
+import { default as CustomerApi, default as CustomersApi } from "./customersApi";
 import { toast } from 'react-toastify';
 import FormContentLoader from '../components/loaders/FormContentLoader';
 

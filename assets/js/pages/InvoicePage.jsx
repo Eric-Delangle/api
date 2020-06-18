@@ -2,7 +2,7 @@ import React, { useState, useEffect  } from 'react';
 import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import { Link } from 'react-router-dom';
-import CustomersApi from "customersApi";
+import CustomersApi from "./customersApi";
 import InvoicesApi from "invoicesApi";
 import invoicesApi from 'invoicesApi';
 import { toast } from 'react-toastify';
