@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
-import CustomersApi from "./servants/customersApi";
+import CustomersApi from "../servants/customersApi";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import TableLoader from "../components/loaders/TableLoader";

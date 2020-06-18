@@ -9,7 +9,7 @@ import CustomersPage from "./pages/CustomersPage";
 import HomePage from "./pages/HomePage";
 import InvoicesPage from "./pages/InvoicesPage";
 import LoginPage from "./pages/LoginPage";
-import AuthApi from "/servants/authApi";
+import AuthApi from "./servants/authApi";
 import CustomerPage from "./pages/CustomerPage";
 import InvoicePage from "./pages/InvoicePage";
 import RegisterPage from "./pages/RegisterPage";
