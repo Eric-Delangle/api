@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import Field from '../components/forms/Field';
-import { default as CustomerApi, default as CustomersApi } from "/customersApi";
-import { toast } from 'react-toastify';
-import FormContentLoader from '../components/loaders/FormContentLoader';
+import React, { useState, useEffect } from "react";
+import Field from "./../components/forms/Field";
+import { Link } from "react-router-dom";
+import CustomersAPI from "../servants/customersAPI";
+import { toast } from "react-toastify";
+import FormContentLoader from "../components/loaders/FormContentLoader";
 
 const CustomerPage = ( { match, history }) => {
 

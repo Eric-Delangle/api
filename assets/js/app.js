@@ -1,5 +1,6 @@
+// Les imports importants
 import React, { useState } from "react";
-import ReactDom from "react-dom";
+import ReactDOM from "react-dom";
 import { HashRouter, Route, Switch, withRouter } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
@@ -8,12 +9,12 @@ import CustomersPage from "./pages/CustomersPage";
 import HomePage from "./pages/HomePage";
 import InvoicesPage from "./pages/InvoicesPage";
 import LoginPage from "./pages/LoginPage";
-import AuthApi from "./../authApi";
+import AuthAPI from "./servants/authAPI";
 import CustomerPage from "./pages/CustomerPage";
 import InvoicePage from "./pages/InvoicePage";
 import RegisterPage from "./pages/RegisterPage";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 /*
  * Welcome to your app's main JavaScript file!
  *

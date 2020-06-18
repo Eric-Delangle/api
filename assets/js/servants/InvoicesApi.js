@@ -1,5 +1,5 @@
 import axios from "axios";
-import { INVOICES_API } from "../assets/js/config";
+import { INVOICES_API } from "../config";
 
 function findAll () {
     return axios 

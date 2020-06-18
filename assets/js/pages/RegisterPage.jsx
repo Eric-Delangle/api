@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import Field from '../components/forms/Field';
-import { Link } from 'react-router-dom';
-import UsersApi from "./../usersApi";
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import Field from "./../components/forms/Field";
+import { Link } from "react-router-dom";
+import UsersAPI from "../servants/usersAPI";
+import { toast } from "react-toastify";
 
 const RegisterPage = ({ history }) => {
 

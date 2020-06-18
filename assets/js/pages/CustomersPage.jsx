@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Pagination from '../components/Pagination';
-import CustomersApi from "./../customersApi";
-import { Link } from  "react-router-dom";
-import { toast } from 'react-toastify';
-import TableLoader from '../components/loaders/TableLoader';
+import React, { useEffect, useState } from "react";
+import Pagination from "../components/Pagination";
+import CustomersAPI from "../servants/customersAPI";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 
 const CustomersPage = props => {
 

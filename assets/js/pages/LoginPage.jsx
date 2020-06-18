@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
-import AuthApi from './../authApi';
+import React, { useState, useContext } from "react";
+import AuthAPI from "../servants/authAPI";
 import AuthContext from "../contexts/AuthContext";
-import Field from '../components/forms/Field';
-import { toast } from 'react-toastify';
+import Field from "../components/forms/Field";
+import { toast } from "react-toastify";
 
 const LoginPage = ({ history }) => {
     const { setIsAuthenticated } = useContext(AuthContext);
