@@ -53,7 +53,7 @@ const CustomerPage = ( { match, history }) => {
         setCustomer({ ...customer, [name] : value });
     }
 
-    // Gestion de la soumission du formulaire
+    // Gestion de la soumission du formulaire des customers.
     const handleSubmit =  async event => {
         event.preventDefault();
       try {
