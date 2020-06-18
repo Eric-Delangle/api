@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Field from "./../components/forms/Field";
 import { Link } from "react-router-dom";
-import UsersApi from "../servants/usersApi";
+import UsersApi from "./servants/usersApi";
 import { toast } from "react-toastify";
 
 const RegisterPage = ({ history }) => {
