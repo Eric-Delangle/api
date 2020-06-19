@@ -53,32 +53,36 @@ const CustomerPage = ( { match, history }) => {
         setCustomer({ ...customer, [name] : value });
     }
 
-    // Gestion de la soumission du formulaire des customers.
-    const handleSubmit =  async event => {
-        event.preventDefault();
-      try {
-        setErrors({});
-          if (editing) {
-             await CustomersApi.update(id, customer);
-            toast.success("Le client a bien été modifié");
-          } else {
-            await CustomerApi.create(customer);
-            toast.success("Le client a bien été créé");
-            props.history.replace("/customers");
-          }
-      } catch ({ response }) {
-        const { violations } = response.data;
-  
-        if (violations) {
-          const apiErrors = {};
-          violations.forEach(({ propertyPath, message }) => {
-            apiErrors[propertyPath] = message;
-          });
-           setErrors(apiErrors);
-          toast.error("Il y a des erreurs dans votre formulaire");
-       }
+      // Gestion de la soumission du formulaire
+  const handleSubmit = async event => {
+    event.preventDefault();
+
+    try {
+      setErrors({});
+
+      if (editing) {
+        await CustomersApi.update(id, customer);
+        toast.success("Le client a bien été modifié");
+      } else {
+        await CustomersApi.create(customer);
+        toast.success("Le client a bien été créé");
+        history.replace("/customers");
+      }
+    } catch ({ response }) {
+      const { violations } = response.data;
+
+      if (violations) {
+        const apiErrors = {};
+        violations.forEach(({ propertyPath, message }) => {
+          apiErrors[propertyPath] = message;
+        });
+
+        setErrors(apiErrors);
+        toast.error("Des erreurs dans votre formulaire !");
       }
     }
+  };
+
     return ( 
         <>
             {( !editing && <h1>Création d'un client.</h1>) ||( <h1>Modification du client.</h1>)}
