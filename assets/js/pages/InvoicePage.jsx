@@ -73,32 +73,34 @@ const InvoicePage = ( { history, match  }) => {
         setInvoice({ ...invoice, [name] : value });
     }
 
-    // Gestion de la soumission du formulaire.
-    const handleSubmit =  async (event) => {
-        event.preventDefault();
-        try {
-            if(editing) {
-                 await invoicesApi.update(id, invoice);
-                toast.success("La facture a bien été modifiée");
-            } else { 
-                await InvoicesApi.create(invoice);
-                toast.success("La facture a bien été crée");
-                history.replace("/invoices");
-            }
-        
-        }catch ({ response }) {
-            const { violations } = response.data;
-      
-            if (violations) {
-              const apiErrors = {};
-              violations.forEach(({ propertyPath, message }) => {
-                apiErrors[propertyPath] = message;
-              });
-               setErrors(apiErrors);
-              toast.error("Il y a des erreurs dans votre formulaire");
-           }
-          } 
+    // Gestion de la soumission du formulaire
+  const handleSubmit = async event => {
+    event.preventDefault();
+
+    try {
+      if (editing) {
+        await InvoicesApi.update(id, invoice);
+        toast.success("La facture a bien été modifiée");
+      } else {
+        await InvoicesApi.create(invoice);
+        toast.success("La facture a bien été enregistrée");
+        history.replace("/invoices");
+      }
+    } catch ({ response }) {
+      const { violations } = response.data;
+
+      if (violations) {
+        const apiErrors = {};
+        violations.forEach(({ propertyPath, message }) => {
+          apiErrors[propertyPath] = message;
+        });
+
+        setErrors(apiErrors);
+        toast.error("Des erreurs dans votre formulaire");
+      }
     }
+  };
+
 
     return ( 
         <>
